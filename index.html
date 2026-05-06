@@ -831,6 +831,57 @@ function renderLiveSection(items) {
   `;
 }
 
+function generateLiveTip(item) {
+  const field = item.pldirSportRealmLclasCodeNm || "";
+  const txt = [item.pblancNm, item.bsnsSumryCn, item.trgetNm, item.reqstMthPapersCn].join(" ").toLowerCase();
+  const period = item.reqstBeginEndDe || "";
+  const tips = [];
+
+  // 마감 임박
+  const end = liveEndDate(item);
+  if (end) {
+    const d = Math.ceil((new Date(end) - new Date()) / 86400000);
+    if (d <= 5) tips.push(`마감까지 <b>${d}일</b> 남았어요. 서류 미리 챙겨서 빠르게 신청하세요.`);
+  }
+
+  // 분야·키워드 기반 핵심 팁
+  if (txt.includes("바우처")) {
+    tips.push(`바우처는 <b>지정된 공급기업에서만</b> 사용 가능해요. 원하는 업체가 지정 목록에 있는지 먼저 확인하세요.`);
+  } else if (txt.includes("환경개선") || txt.includes("인테리어") || txt.includes("시설개선") || txt.includes("리모델링")) {
+    tips.push(`<b>공사 착수 전에 반드시 신청</b>하세요. 이미 공사가 시작됐거나 완료됐다면 소급 지원이 안 돼요.`);
+  } else if (field === "금융" || txt.includes("융자") || txt.includes("보증대출") || txt.includes("저금리")) {
+    tips.push(`신청 전 <b>국세·지방세 완납 여부</b>를 꼭 확인하세요. 체납 이력이 있으면 심사에서 탈락할 수 있어요.`);
+  } else if (field === "인력" || txt.includes("고용장려") || txt.includes("인건비 지원") || txt.includes("일자리")) {
+    tips.push(`<b>고용보험 가입 여부</b>가 핵심 조건이에요. 직원 채용 직후 신청하지 않으면 소급이 안 되니 타이밍을 놓치지 마세요.`);
+  } else if (txt.includes("창업사관") || txt.includes("예비창업")) {
+    tips.push(`경쟁이 있는 사업이에요. <b>사업계획서 완성도</b>가 당락에 큰 영향을 주니, 제출 전 충분히 다듬어보세요.`);
+  } else if (field === "창업" || txt.includes("창업자금") || txt.includes("창업 초기")) {
+    tips.push(`창업 <b>초기 비용 영수증과 계약서</b>를 꼼꼼히 보관하세요. 지원금 정산 시 증빙 서류가 없으면 환수될 수 있어요.`);
+  } else if (txt.includes("컨설팅") || txt.includes("진단") || txt.includes("멘토")) {
+    tips.push(`컨설턴트 매칭까지 <b>1~2주</b>가 걸릴 수 있어요. 창업·개점 일정이 촉박하다면 지금 바로 신청하세요.`);
+  } else if (txt.includes("교육") || txt.includes("훈련") || txt.includes("아카데미")) {
+    tips.push(`교육 과정에는 <b>출석률 조건</b>이 있는 경우가 많아요. 전체 일정을 먼저 확인하고 신청하세요.`);
+  } else if (txt.includes("판로") || txt.includes("마케팅") || txt.includes("홍보") || txt.includes("온라인 쇼핑")) {
+    tips.push(`기존 판매 채널(쇼핑몰·SNS 등)이 있으면 <b>가점</b>이 되는 경우가 많아요. 신청서에 꼭 기재하세요.`);
+  } else if (txt.includes("임차") || txt.includes("임대료") || txt.includes("월세")) {
+    tips.push(`임대차 <b>계약서 체결 직후</b>에 신청하는 게 유리해요. 계약 후 일정 기간이 지나면 신청이 불가한 경우가 있어요.`);
+  } else {
+    tips.push(`신청 전 공고문에서 <b>자격 요건과 필요 서류</b>를 꼼꼼히 확인하세요. 서류 미비로 탈락하는 경우가 많아요.`);
+  }
+
+  // 예산 소진 경고
+  if (period.includes("소진") || period.includes("상시")) {
+    tips.push(`예산 소진 시 <b>조기 마감</b>될 수 있어요. 자격이 된다면 미루지 말고 바로 신청하세요.`);
+  }
+
+  // 링크 안내
+  tips.push(item.rceptEngnHmpgUrl
+    ? `사업 운영기관의 <b>직접 신청 페이지</b>로 이어져요. 최종 공고 내용을 확인 후 신청하세요.`
+    : `<b>기업마당(bizinfo.go.kr)</b> 공고 페이지로 이어져요. 신청 방법과 필요 서류를 확인하세요.`);
+
+  return tips.join("<br/><br/>");
+}
+
 function openLiveDetail(idx) {
   const item = _liveDisplayItems[idx];
   if (!item) return;
@@ -855,7 +906,7 @@ function openLiveDetail(idx) {
     </div>
     <div class="sec" style="background:var(--blue-50);">
       <p style="font-size:11px;font-weight:600;color:var(--blue-500);letter-spacing:.3px;margin-bottom:8px;">신청 전에 알아두세요</p>
-      <p class="sec-text" style="line-height:1.7;">${item.rceptEngnHmpgUrl ? "사업 운영기관의 <b>직접 신청 페이지</b>로 이어져요." : "<b>기업마당(bizinfo.go.kr)</b> 공고 페이지로 이어져요."} 신청하기 버튼을 눌러 확인 후 신청해주세요.</p>
+      <p class="sec-text" style="line-height:1.7;">${generateLiveTip(item)}</p>
     </div>
     ${item.bsnsSumryCn ? `<div class="sec"><p class="sec-label">사업 개요</p><div class="sec-text" style="line-height:1.7;">${item.bsnsSumryCn}</div></div>` : ""}
     ${item.trgetNm ? `<div class="sec"><p class="sec-label">지원 대상</p><p class="sec-text">${item.trgetNm}</p></div>` : ""}
