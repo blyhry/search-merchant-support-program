@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="referrer" content="no-referrer"/>
+  <title>지원사업 찾기 — 아이샵케어</title>
+  <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css"/>
+  <script src="data/grants.js"></script>
+  <script src="data/regions.js"></script>
+  <style>
+    /* ── TDS Color Tokens ─────────────────────────── */
+    :root {
+      --white:      #FFFFFF;
+      --gray-100:   #F2F4F6;
+      --gray-200:   #E5E8EB;
+      --gray-300:   #D1D5DC;
+      --gray-400:   #B0B8C1;
+      --gray-500:   #8B95A1;
+      --gray-600:   #6B7684;
+      --gray-900:   #191F28;
+      --blue-50:    #EBF3FE;
+      --blue-500:   #3182F6;
+      --red-50:     #FFF2F2;
+      --red-500:    #F04452;
+      --green-50:   #EDFBEA;
+      --green-500:  #1EC800;
+      --orange-50:  #FFF3E0;
+      --orange-500: #FF6B00;
+      --bg:         var(--gray-100);
+      --surface:    var(--white);
+      --border:     var(--gray-200);
+      --t1:         var(--gray-900);
+      --t2:         var(--gray-600);
+      --t3:         var(--gray-400);
+      --primary:    var(--blue-500);
+      --primary-bg: var(--blue-50);
+    }
+
+    /* ── Reset ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: var(--bg); color: var(--t1);
+      font-size: 14px; font-weight: 400; line-height: 1.5;
+      min-height: 100dvh;
+    }
+
+    /* ── Screen System ───────────────────────────── */
+    .screen { display: none; max-width: 390px; margin: 0 auto; min-height: 100dvh; }
+    .screen.on { display: block; }
+
+    /* ── Nav ─────────────────────────────────────── */
+    .nav {
+      height: 52px; display: flex; align-items: center; padding: 0 8px;
+      position: sticky; top: 0; z-index: 10; background: var(--bg);
+    }
+    .nav.white { background: var(--surface); border-bottom: 1px solid var(--border); }
+    .nav-btn {
+      width: 44px; height: 44px; display: flex; align-items: center;
+      justify-content: center; border: none; background: none; cursor: pointer; border-radius: 50%;
+    }
+    .nav-btn:active { background: var(--border); }
+    .nav-title { font-size: 15px; font-weight: 600; flex: 1; text-align: center; margin-right: 44px; }
+
+    /* ── Layout ──────────────────────────────────── */
+    .pad { padding: 0 20px; }
+    .surface { background: var(--surface); }
+    .gap { height: 8px; background: var(--bg); }
+    .pb-cta { padding-bottom: 88px; }
+
+    /* ── Typography ──────────────────────────────── */
+    .heading { font-size: 22px; font-weight: 700; line-height: 1.35; letter-spacing: -0.3px; }
+    .step-heading { font-size: 22px; font-weight: 700; line-height: 1.4; letter-spacing: -0.3px; }
+    .body-em { font-size: 15px; font-weight: 500; line-height: 1.55; }
+    .body { font-size: 14px; font-weight: 400; line-height: 1.6; color: var(--t2); }
+    .label { font-size: 13px; font-weight: 500; color: var(--t2); }
+    .caption { font-size: 12px; font-weight: 400; color: var(--t3); }
+
+    /* ── Progress bar ────────────────────────────── */
+    .progress-wrap { display: flex; gap: 4px; padding: 0 20px 4px; }
+    .progress-seg { height: 3px; border-radius: 2px; flex: 1; background: var(--border); transition: background .25s; }
+    .progress-seg.on { background: var(--primary); }
+
+    /* ── Bottom CTA ──────────────────────────────── */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 390px;
+      padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+      background: linear-gradient(to bottom, transparent, var(--bg) 32%);
+    }
+    .bottom-bar.white { background: linear-gradient(to bottom, transparent, var(--surface) 32%); }
+    .btn {
+      width: 100%; height: 52px; border: none; border-radius: 10px;
+      font-size: 16px; font-weight: 600; font-family: inherit; cursor: pointer;
+      transition: opacity .1s;
+    }
+    .btn:active { opacity: .82; }
+    .btn-primary { background: var(--primary); color: var(--white); }
+    .btn-ghost { background: var(--border); color: var(--t2); font-weight: 500; font-size: 14px; }
+
+    /* ── Entry Cards (Home) ──────────────────────── */
+    .entry-card {
+      background: var(--surface); border-radius: 16px; padding: 18px 16px;
+      display: flex; align-items: center; gap: 14px;
+      cursor: pointer; transition: opacity .1s; margin-bottom: 10px;
+    }
+    .entry-card:active { opacity: .82; }
+    .entry-icon {
+      width: 44px; height: 44px; border-radius: 12px; background: var(--bg);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .entry-title { font-size: 15px; font-weight: 600; color: var(--t1); }
+    .entry-sub { font-size: 12px; color: var(--t3); margin-top: 2px; }
+    .chevron { color: var(--gray-300); flex-shrink: 0; }
+
+    /* ── Compare Table (Home) ────────────────────── */
+    .compare-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; }
+    .compare-row + .compare-row { border-top: 1px solid var(--border); }
+    .compare-other { font-size: 13px; color: var(--t3); flex: 1; }
+    .compare-arrow { font-size: 11px; color: var(--gray-300); flex-shrink: 0; padding-top: 2px; }
+    .compare-us { font-size: 13px; color: var(--t1); flex: 1; }
+
+    /* ── Select ──────────────────────────────────── */
+    .select-box {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 0 14px; height: 48px; display: flex; align-items: center;
+    }
+    .select-box select {
+      width: 100%; border: none; outline: none; background: transparent;
+      font-size: 14px; color: var(--t1); font-family: inherit; cursor: pointer;
+      appearance: none; -webkit-appearance: none;
+    }
+    .select-box select option:first-child { color: var(--t3); }
+
+    /* ── Sido grid ───────────────────────────────── */
+    .sido-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .sido-chip {
+      height: 44px; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface); display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: var(--t2); cursor: pointer; transition: all .12s;
+    }
+    .sido-chip.on { border-color: var(--primary); background: var(--primary-bg); color: var(--primary); font-weight: 500; }
+
+    /* ── Industry Chips ──────────────────────────── */
+    .chip-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 20px;
+      background: var(--surface); font-size: 14px; font-weight: 400; color: var(--t2);
+      cursor: pointer; transition: all .12s; user-select: none;
+      display: inline-flex; align-items: center;
+    }
+    .chip.on { border-color: var(--primary); background: var(--primary-bg); color: var(--primary); font-weight: 500; }
+
+    /* ── Toggle Row ──────────────────────────────── */
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface); border-radius: 12px; padding: 16px;
+    }
+    .toggle-label { font-size: 14px; color: var(--t1); }
+    .toggle-sub { font-size: 12px; color: var(--t3); margin-top: 2px; }
+    .toggle {
+      width: 44px; height: 26px; border-radius: 13px; background: var(--border);
+      position: relative; cursor: pointer; transition: background .2s; flex-shrink: 0;
+    }
+    .toggle.on { background: var(--primary); }
+    .toggle-dot {
+      width: 20px; height: 20px; border-radius: 50%; background: var(--white);
+      position: absolute; top: 3px; left: 3px; transition: transform .2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+    .toggle.on .toggle-dot { transform: translateX(18px); }
+
+    /* ── Revenue Chips ───────────────────────────── */
+    .revenue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .revenue-chip {
+      height: 52px; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface); display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: var(--t2); cursor: pointer; transition: all .12s;
+    }
+    .revenue-chip.on { border-color: var(--primary); background: var(--primary-bg); color: var(--primary); font-weight: 500; }
+
+    /* ── Stage Selector ──────────────────────────── */
+    .stage-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px 0; cursor: pointer; border-bottom: 1px solid var(--border);
+    }
+    .stage-item:last-child { border-bottom: none; }
+    .stage-dot {
+      width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      font-size: 11px; color: var(--t3); margin-top: 1px; transition: all .12s;
+    }
+    .stage-item.on .stage-dot { background: var(--primary); border-color: var(--primary); color: var(--white); }
+    .stage-label { font-size: 15px; color: var(--t1); }
+    .stage-sub { font-size: 12px; color: var(--t3); margin-top: 3px; }
+    .stage-item.on .stage-label { color: var(--primary); font-weight: 500; }
+
+    /* ── Grant Card ──────────────────────────────── */
+    .grant-card {
+      background: var(--surface); border-radius: 16px; padding: 18px;
+      margin-bottom: 10px; cursor: pointer; transition: opacity .1s;
+    }
+    .grant-card:active { opacity: .82; }
+    .badge {
+      display: inline-block; font-size: 11px; font-weight: 500;
+      padding: 3px 8px; border-radius: 20px; margin-bottom: 10px;
+    }
+    .badge-blue   { background: var(--blue-50);   color: var(--blue-500); }
+    .badge-green  { background: var(--green-50);  color: var(--green-500); }
+    .badge-orange { background: var(--orange-50); color: var(--orange-500); }
+    .badge-red    { background: var(--red-50);    color: var(--red-500); }
+    .grant-title { font-size: 15px; font-weight: 500; color: var(--t1); line-height: 1.4; }
+    .grant-org { font-size: 12px; color: var(--t3); margin-top: 3px; }
+    .grant-summary { font-size: 13px; color: var(--t2); margin-top: 8px; line-height: 1.55; }
+    .grant-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+    .grant-amount { font-size: 15px; font-weight: 600; color: var(--t1); }
+    .dday { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 6px; }
+    .dday-urgent { background: var(--red-50);   color: var(--red-500); }
+    .dday-normal { background: var(--blue-50);  color: var(--blue-500); }
+    .dday-safe   { background: var(--green-50); color: var(--green-500); }
+
+    /* ── Detail ──────────────────────────────────── */
+    .detail-hero { padding: 24px 20px 20px; }
+    .detail-title { font-size: 20px; font-weight: 700; line-height: 1.35; letter-spacing: -0.3px; }
+    .detail-org { font-size: 13px; color: var(--t3); margin-top: 4px; }
+    .meta-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+    .meta-tag { background: var(--bg); border-radius: 8px; padding: 7px 12px; font-size: 13px; color: var(--t2); }
+    .meta-tag b { color: var(--t1); font-weight: 500; }
+    .sec { padding: 20px; }
+    .sec + .sec { border-top: 1px solid var(--border); }
+    .sec-label { font-size: 11px; font-weight: 500; color: var(--t3); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+    .sec-text { font-size: 14px; color: var(--t1); line-height: 1.7; }
+
+    /* ── Bottom Sheet ────────────────────────────── */
+    .sheet-bg {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      z-index: 50; opacity: 0; transition: opacity .22s;
+      align-items: flex-end; justify-content: center;
+    }
+    .sheet-bg.vis { opacity: 1; }
+    .sheet {
+      width: 100%; max-width: 390px; background: var(--surface);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+      transform: translateY(100%); transition: transform .28s cubic-bezier(.32,.72,0,1);
+    }
+    .sheet.up { transform: translateY(0); }
+    .sheet-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+    .input-box {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 16px; margin-bottom: 10px; transition: border-color .12s;
+    }
+    .input-box:focus-within { border-color: var(--primary); }
+    .input-box input {
+      width: 100%; border: none; outline: none; background: transparent;
+      font-size: 16px; font-weight: 500; color: var(--t1); font-family: inherit;
+    }
+    .input-box input::placeholder { color: var(--t3); font-weight: 400; }
+    .agree-line { display: flex; align-items: center; gap: 10px; padding: 10px 0; cursor: pointer; }
+    .agree-dot {
+      width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .12s;
+    }
+    .agree-dot.on { background: var(--primary); border-color: var(--primary); }
+
+    /* ── Loading ─────────────────────────────────── */
+    .loading {
+      display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100;
+      align-items: center; justify-content: center; flex-direction: column; gap: 12px;
+    }
+    .loading.on { display: flex; }
+    .spinner {
+      width: 28px; height: 28px; border: 2.5px solid var(--border);
+      border-top-color: var(--primary); border-radius: 50%;
+      animation: spin .65s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Animations ──────────────────────────────── */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fu { opacity: 0; animation: fadeUp .28s ease forwards; }
+    .fu-1 { animation-delay: .05s; }
+
+    /* ── Category filter chips ───────────────────── */
+    .cat-scroll {
+      display: flex; gap: 8px; overflow-x: auto;
+      padding: 0 20px 12px; scrollbar-width: none; -ms-overflow-style: none;
+    }
+    .cat-scroll::-webkit-scrollbar { display: none; }
+    .cat-chip {
+      flex-shrink: 0; height: 34px; padding: 0 14px;
+      border: 1px solid var(--border); border-radius: 17px;
+      background: var(--surface); font-size: 13px; color: var(--t2);
+      cursor: pointer; transition: all .12s; font-family: inherit; white-space: nowrap;
+    }
+    .cat-chip.on { border-color: var(--primary); background: var(--primary-bg); color: var(--primary); font-weight: 600; }
+    .badge-gray { background: var(--gray-100); color: var(--gray-500); }
+  </style>
+</head>
+<body>
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <p class="caption" style="color:var(--t2)">신청 가능한 지원사업 확인 중</p>
+</div>
+
+<!-- ════════ HOME ════════ -->
+<div class="screen on" id="home" style="background:var(--surface);">
+
+  <!-- Hero -->
+  <div style="padding:52px 24px 28px;">
+    <p style="font-size:12px;font-weight:600;color:var(--blue-500);letter-spacing:.2px;margin-bottom:14px;">소상공인 지원사업 매칭</p>
+    <h1 style="font-size:26px;font-weight:800;color:var(--gray-900);line-height:1.35;letter-spacing:-.5px;">내 상황에 딱맞는<br/><span style="color:var(--blue-500);">소상공인 지원사업</span> 찾기</h1>
+    <p style="font-size:15px;color:var(--gray-500);margin-top:14px;line-height:1.65;"><b style="color:var(--gray-900);">아이샵케어가 도와드릴게요.</b><br/>내 조건에 맞는 것만 골라서 신청까지 연결해드려요.</p>
+  </div>
+
+  <!-- Differentiators -->
+  <div style="margin:0 20px 28px;background:var(--gray-100);border-radius:16px;padding:20px;">
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;">
+      <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-500);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <p style="font-size:14px;font-weight:600;color:var(--gray-900);">공고 목록 말고, 내 조건 기반 즉시 매칭</p>
+        <p style="font-size:13px;color:var(--gray-500);margin-top:3px;line-height:1.5;">지역·업종·매출 입력하면 지금 당장 신청 가능한 것만 보여줘요</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="width:22px;height:22px;border-radius:50%;background:var(--blue-500);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <p style="font-size:14px;font-weight:600;color:var(--gray-900);">신청 페이지까지 한 번에 연결</p>
+        <p style="font-size:13px;color:var(--gray-500);margin-top:3px;line-height:1.5;">알림만 보내고 끝내는 게 아니라 신청 창구까지 바로 이어줘요</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div style="padding:0 20px 40px;">
+    <button class="btn btn-primary" onclick="go('step-type')" style="font-size:17px;font-weight:700;border-radius:14px;height:56px;">내 가게 지원사업 찾기</button>
+    <p style="text-align:center;font-size:12px;color:var(--gray-400);margin-top:12px;">무료 · 1분이면 충분해요</p>
+  </div>
+
+</div>
+
+
+<!-- ════════ STEP 0: 유형 선택 ════════ -->
+<div class="screen" id="step-type">
+  <div class="nav">
+    <button class="nav-btn" onclick="go('home')">
+      <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M8 1L1 8l7 7" stroke="#191F28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="pad" style="padding-top:20px;padding-bottom:32px;">
+    <h2 class="step-heading">어떤 상황이신가요?</h2>
+    <p style="font-size:14px;color:var(--t2);margin-top:8px;">상황에 맞게 지원사업을 추려드려요</p>
+
+    <div style="margin-top:28px;display:flex;flex-direction:column;gap:12px;">
+      <div class="entry-card" style="margin-bottom:0;" onclick="startFlow('existing')">
+        <div class="entry-icon" style="background:var(--blue-50);">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M2 8h14M2 8V15a1 1 0 001 1h12a1 1 0 001-1V8M2 8l2-5h10l2 5" stroke="var(--blue-500)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div style="flex:1;">
+          <p class="entry-title">매장 운영 중이에요</p>
+          <p class="entry-sub">지금 운영 중인 매장이 있어요</p>
+        </div>
+        <svg class="chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B0B8C1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <div class="entry-card" style="margin-bottom:0;" onclick="startFlow('prospective')">
+        <div class="entry-icon" style="background:var(--blue-50);">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7" stroke="var(--blue-500)" stroke-width="1.5"/>
+            <path d="M9 6v3.5l2.5 1.5" stroke="var(--blue-500)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div style="flex:1;">
+          <p class="entry-title">예비 사장님이에요</p>
+          <p class="entry-sub">가게 열 생각이나 준비 중이에요</p>
+        </div>
+        <svg class="chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#B0B8C1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════ STEP 1: 지역 ════════ -->
+<div class="screen" id="step-region">
+  <div class="nav">
+    <button class="nav-btn" onclick="go('step-type')">
+      <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M8 1L1 8l7 7" stroke="#191F28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-seg on"></div>
+    <div class="progress-seg"></div>
+    <div class="progress-seg"></div>
+  </div>
+  <div class="pad pb-cta" style="padding-top:20px;">
+    <h2 class="step-heading" id="region-heading">어느 지역에<br/>매장이 있나요?</h2>
+    <div class="sido-grid" id="sido-grid" style="margin-top:24px;"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn btn-primary" onclick="confirmRegion()">다음</button>
+  </div>
+</div>
+
+
+<!-- ════════ STEP 2: 업종 ════════ -->
+<div class="screen" id="step-industry">
+  <div class="nav">
+    <button class="nav-btn" onclick="go('step-region')">
+      <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M8 1L1 8l7 7" stroke="#191F28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-seg on"></div>
+    <div class="progress-seg on"></div>
+    <div class="progress-seg"></div>
+  </div>
+  <div class="pad" style="padding-top:20px;padding-bottom:32px;">
+    <h2 class="step-heading" id="industry-heading">업종이<br/>어떻게 되나요?</h2>
+    <div class="chip-wrap" id="industry-chips" style="margin-top:24px;"></div>
+  </div>
+</div>
+
+
+<!-- ════════ STEP 3-A: 매출 규모 (기존 사장님) ════════ -->
+<div class="screen" id="step-revenue">
+  <div class="nav">
+    <button class="nav-btn" onclick="go('step-industry')">
+      <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M8 1L1 8l7 7" stroke="#191F28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-seg on"></div>
+    <div class="progress-seg on"></div>
+    <div class="progress-seg on"></div>
+  </div>
+  <div class="pad pb-cta" style="padding-top:20px;">
+    <h2 class="step-heading">연 매출 규모는<br/>어느 정도인가요?</h2>
+    <div class="revenue-grid" id="revenue-chips" style="margin-top:24px;">
+      <div class="revenue-chip" data-tier="0" onclick="selectRevenue(0)">1억 미만</div>
+      <div class="revenue-chip" data-tier="1" onclick="selectRevenue(1)">1억 ~ 3억</div>
+      <div class="revenue-chip" data-tier="2" onclick="selectRevenue(2)">3억 ~ 10억</div>
+      <div class="revenue-chip" data-tier="3" onclick="selectRevenue(3)">10억 이상</div>
+    </div>
+    <p class="caption" style="margin-top:10px;margin-bottom:20px;">소상공인 기준: 업종에 따라 연 매출 10억 이하</p>
+    <div class="toggle-row">
+      <div>
+        <p class="toggle-label">프랜차이즈 (가맹점) 운영 중</p>
+        <p class="toggle-sub" style="margin-top:2px;">대형 브랜드 가맹점이면 일부 지원 제외</p>
+      </div>
+      <div class="toggle" id="franchise-toggle" onclick="toggleFranchise()">
+        <div class="toggle-dot"></div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn btn-primary" onclick="searchExisting()">지원사업 찾기</button>
+  </div>
+</div>
+
+
+<!-- ════════ STEP 3-B: 창업 단계 (예비 사장님) ════════ -->
+<div class="screen" id="step-stage">
+  <div class="nav">
+    <button class="nav-btn" onclick="go('step-industry')">
+      <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M8 1L1 8l7 7" stroke="#191F28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-seg on"></div>
+    <div class="progress-seg on"></div>
+    <div class="progress-seg on"></div>
+  </div>
+  <div class="pad pb-cta" style="padding-top:20px;">
+    <h2 class="step-heading">지금 어느 단계에 계세요?</h2>
+    <div id="stage-list" style="margin-top:24px;"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn btn-primary" onclick="searchProspective()">지원사업 찾기</button>
+  </div>
+</div>
+
+
+<!-- ════════ RESULTS ════════ -->
+<div class="screen" id="results">
+  <div class="nav">
+    <button class="nav-btn" id="results-back">
+      <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M8 1L1 8l7 7" stroke="#191F28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <span class="nav-title">지원사업</span>
+  </div>
+  <div class="pad pb-cta" style="padding-top:8px;">
+    <div class="fu" id="results-header"></div>
+    <div id="cat-filter" style="margin:0 -20px 4px;"></div>
+    <div id="promo-banner" style="display:none;margin-bottom:4px;"></div>
+    <div id="live-section"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn btn-ghost" id="results-reset">조건 다시 입력</button>
+  </div>
+</div>
+
+
+<!-- ════════ DETAIL ════════ -->
+<div class="screen" id="detail">
+  <div class="nav white">
+    <button class="nav-btn" onclick="go('results')">
+      <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M8 1L1 8l7 7" stroke="#191F28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <span class="nav-title" id="detail-nav"></span>
+  </div>
+  <div style="background:var(--surface);min-height:100dvh;">
+    <div id="detail-body"></div>
+    <div style="height:88px;"></div>
+  </div>
+  <div class="bottom-bar white">
+    <a class="btn btn-primary" id="btn-apply" href="#" target="_blank" rel="noreferrer noopener"
+       style="display:flex;align-items:center;justify-content:center;text-decoration:none;">신청하러 가기</a>
+  </div>
+</div>
+
+
+<!-- ════════ NOTIFY SHEET ════════ -->
+<div class="sheet-bg" id="sheet-bg" onclick="closeSheet(event)">
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <h2 style="font-size:17px;font-weight:700;margin-bottom:4px;">알림 신청</h2>
+    <p class="body" style="margin-bottom:16px;" id="sheet-sub"></p>
+    <div class="input-box">
+      <input id="sheet-phone" type="tel" placeholder="010-0000-0000" maxlength="13" oninput="fmtPhone(this)"/>
+    </div>
+    <div class="agree-line" onclick="dotToggle('sheet-dot')">
+      <div class="agree-dot" id="sheet-dot"></div>
+      <span class="label">[필수] 개인정보 수집·이용 및 알림 수신 동의</span>
+    </div>
+    <button class="btn btn-primary" style="margin-top:12px;" onclick="submitNotify()">알림 신청하기</button>
+  </div>
+</div>
+
+
+<script>
+// ── API 상수 ────────────────────────────────────
+const BIZINFO_KEY = "375e79";
+const BIZINFO_API = "https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do";
+
+const FIELD_MAP = {
+  "금융": { label: "자금지원", color: "blue" },
+  "경영": { label: "경영개선", color: "orange" },
+  "창업": { label: "창업",   color: "green"  },
+  "인력": { label: "인건비", color: "orange" },
+  "기술": { label: "디지털", color: "blue"   },
+  "내수": { label: "판로지원", color: "green" },
+  "수출": { label: "수출",   color: "blue"   },
+  "기타": { label: "기타",   color: "gray"   },
+};
+
+const CAT_LABELS = ["전체", "자금지원", "경영개선", "창업", "인건비", "디지털", "판로지원"];
+
+const LIVE_CAT_MAP = {
+  "자금지원": ["금융"],
+  "경영개선": ["경영"],
+  "창업":     ["창업"],
+  "인건비":   ["인력"],
+  "디지털":   ["기술"],
+  "판로지원": ["내수", "수출"],
+};
+
+let activeFilter = "전체";
+let _liveItems = [];
+let _liveDisplayItems = [];
+
+// ── State ────────────────────────────────────────
+const state = {
+  flow: "",
+  sido: "",
+  industry: "",
+  eFranchise: false, eRevenue: null,
+  pStage: null,
+};
+
+// ── Flow start ───────────────────────────────────
+function startFlow(flow) {
+  state.flow = flow;
+  state.sido = ""; state.industry = "";
+  state.eFranchise = false; state.eRevenue = null; state.pStage = null;
+
+  document.getElementById("region-heading").innerHTML =
+    flow === "prospective"
+      ? "어느 지역에<br/>창업할 예정인가요?"
+      : "어느 지역에<br/>매장이 있나요?";
+  document.getElementById("industry-heading").innerHTML =
+    flow === "prospective"
+      ? "어떤 업종으로<br/>창업할 예정인가요?"
+      : "업종이<br/>어떻게 되나요?";
+
+  const grid = document.getElementById("sido-grid");
+  grid.innerHTML = SIDO_LIST.map(s =>
+    `<div class="sido-chip" data-v="${s}" onclick="selectSido('${s}')">${s}</div>`
+  ).join("");
+
+  document.getElementById("franchise-toggle").classList.remove("on");
+
+  go("step-region");
+}
+
+// ── Region ───────────────────────────────────────
+function selectSido(sido) {
+  state.sido = sido;
+  document.querySelectorAll("#sido-grid .sido-chip").forEach(c =>
+    c.classList.toggle("on", c.dataset.v === sido)
+  );
+}
+
+function confirmRegion() {
+  if (!state.sido) { alert("시/도를 선택해주세요"); return; }
+  goToIndustry();
+}
+
+function goToIndustry() {
+  const el = document.getElementById("industry-chips");
+  el.innerHTML = INDUSTRIES.map(i =>
+    `<div class="chip" data-v="${i}" onclick="selectIndustry('${i}')">${i}</div>`
+  ).join("");
+  go("step-industry");
+}
+
+// ── Industry ─────────────────────────────────────
+function selectIndustry(val) {
+  state.industry = val;
+  document.querySelectorAll("#industry-chips .chip").forEach(c =>
+    c.classList.toggle("on", c.dataset.v === val)
+  );
+
+  // reset next step
+  document.querySelectorAll("#revenue-chips .revenue-chip").forEach(c => c.classList.remove("on"));
+  document.querySelectorAll("#stage-list .stage-item").forEach(c => c.classList.remove("on"));
+  state.eRevenue = null; state.pStage = null;
+
+  setTimeout(() => {
+    go(state.flow === "prospective" ? "step-stage" : "step-revenue");
+  }, 120);
+}
+
+// ── Revenue ──────────────────────────────────────
+function selectRevenue(tier) {
+  state.eRevenue = tier;
+  document.querySelectorAll("#revenue-chips .revenue-chip").forEach(c =>
+    c.classList.toggle("on", +c.dataset.tier === tier)
+  );
+}
+
+function toggleFranchise() {
+  state.eFranchise = !state.eFranchise;
+  document.getElementById("franchise-toggle").classList.toggle("on", state.eFranchise);
+}
+
+// ── Stage ────────────────────────────────────────
+function selectStage(i) {
+  state.pStage = i;
+  document.querySelectorAll("#stage-list .stage-item").forEach(el =>
+    el.classList.toggle("on", +el.dataset.i === i)
+  );
+}
+
+// ── Search ───────────────────────────────────────
+function searchExisting() {
+  if (state.eRevenue === null) { alert("매출 규모를 선택해주세요"); return; }
+  runSearch();
+}
+
+function searchProspective() {
+  if (state.pStage === null) { alert("창업 단계를 선택해주세요"); return; }
+  runSearch();
+}
+
+function runSearch() {
+  const l = document.getElementById("loading");
+  l.classList.add("on");
+  setTimeout(() => { l.classList.remove("on"); buildResults(); go("results"); }, 800);
+}
+
+// ── Build results ────────────────────────────────
+function buildResults() {
+  const isProsp = state.flow === "prospective";
+  _liveItems = [];
+  _liveDisplayItems = [];
+  activeFilter = "전체";
+
+  const backTarget = isProsp ? "step-stage" : "step-revenue";
+  document.getElementById("results-back").onclick  = () => go(backTarget);
+  document.getElementById("results-reset").onclick = () => go("home");
+
+  const banner = document.getElementById("promo-banner");
+  if (isProsp) {
+    banner.style.display = "block";
+    banner.innerHTML = `
+      <a href="https://www.ishopcare.co.kr" target="_blank" rel="noreferrer noopener"
+         style="display:flex;align-items:center;gap:10px;background:var(--blue-50);border:1.5px solid var(--primary);border-radius:12px;padding:12px 14px;text-decoration:none;margin-bottom:12px;">
+        <p style="flex:1;font-size:13px;font-weight:600;color:var(--gray-900);line-height:1.4;">결제단말기 아직 안하셨나요?<br/><span style="font-size:12px;font-weight:400;color:var(--t2);">단말기 연결 시 매출확인서 자동 발급</span></p>
+        <div style="flex-shrink:0;background:var(--primary);color:#fff;border-radius:7px;padding:7px 12px;font-size:13px;font-weight:600;white-space:nowrap;">신청하기</div>
+      </a>
+    `;
+  } else {
+    banner.style.display = "none";
+  }
+
+  const regionLabel = state.sido;
+  const label = !isProsp
+    ? `${regionLabel} · ${state.industry || "전체 업종"}`
+    : (STARTUP_STAGES[state.pStage]?.label || "");
+
+  document.getElementById("results-header").innerHTML = `
+    <p class="caption" style="padding-top:4px;margin-bottom:6px;">${label}</p>
+    <h2 id="results-title" style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-.3px;margin-bottom:16px;">
+      기업마당 실시간 공고
+    </h2>
+  `;
+
+  // 카테고리 필터 칩
+  document.getElementById("cat-filter").innerHTML = `
+    <div class="cat-scroll">
+      ${CAT_LABELS.map(cat =>
+        `<button class="cat-chip${cat === "전체" ? " on" : ""}" data-cat="${cat}" onclick="setFilter('${cat}')">${cat}</button>`
+      ).join("")}
+    </div>
+  `;
+
+  fetchLiveGrants(state.sido);
+}
+
+function setFilter(cat) {
+  activeFilter = cat;
+  document.querySelectorAll(".cat-chip").forEach(c =>
+    c.classList.toggle("on", c.dataset.cat === cat)
+  );
+  renderLiveSection(_liveItems);
+}
+
+// ── 기업마당 실시간 API ──────────────────────────
+function liveEndDate(item) {
+  const s = item.reqstBeginEndDe || "";
+  const m = s.match(/(\d{4}-\d{2}-\d{2})\s*$/);
+  return m ? m[1] : null;
+}
+
+async function fetchLiveGrants(sido) {
+  const section = document.getElementById("live-section");
+  section.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;padding:20px 0 8px;">
+      <div class="spinner"></div>
+      <p class="caption" style="color:var(--t2);">기업마당 소상공인 공고 불러오는 중...</p>
+    </div>
+  `;
+  try {
+    const url = `${BIZINFO_API}?crtfcKey=${BIZINFO_KEY}&dataType=json&pageUnit=200&pageIndex=1&hashtags=%EC%86%8C%EC%83%81%EA%B3%B5%EC%9D%B8`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+    let items = (data.jsonArray || []).filter(item => {
+      const end = liveEndDate(item);
+      return end ? isActive(end) : true;
+    });
+
+    if (sido) {
+      items = items.filter(item => {
+        const nm = item.pblancNm || "";
+        if (!nm.startsWith("[")) return true;
+        return nm.startsWith("[" + sido);
+      });
+    }
+
+    _liveItems = items;
+    renderLiveSection(items);
+  } catch (e) {
+    section.innerHTML = `<p class="caption" style="text-align:center;padding:16px;color:var(--t3);">공고를 불러오지 못했어요</p>`;
+  }
+}
+
+function renderLiveSection(items) {
+  const section = document.getElementById("live-section");
+  const filtered = activeFilter === "전체"
+    ? items
+    : items.filter(item => {
+        const allowed = LIVE_CAT_MAP[activeFilter] || [];
+        return allowed.includes(item.pldirSportRealmLclasCodeNm);
+      });
+
+  const titleEl = document.getElementById("results-title");
+  if (titleEl) titleEl.innerHTML = `기업마당 실시간 <span style="color:var(--primary)">${filtered.length}건</span>`;
+
+  if (filtered.length === 0) {
+    section.innerHTML = `<p class="caption" style="text-align:center;padding:16px;color:var(--t3);">이 카테고리의 공고가 없어요</p>`;
+    return;
+  }
+
+  _liveDisplayItems = filtered;
+  section.innerHTML = `
+    ${filtered.map((item, idx) => {
+      const fieldNm = item.pldirSportRealmLclasCodeNm || "기타";
+      const field = FIELD_MAP[fieldNm] || { label: fieldNm, color: "gray" };
+      const end = liveEndDate(item);
+      const period = item.reqstBeginEndDe || "";
+      return `
+        <div class="grant-card" onclick="openLiveDetail(${idx})">
+          <span class="badge badge-${field.color}">${field.label}</span>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+            <div style="flex:1;">
+              <p class="grant-title">${item.pblancNm}</p>
+              <p class="grant-org">${item.jrsdInsttNm}</p>
+            </div>
+            ${end ? ddayTag(end) : ""}
+          </div>
+          <div class="grant-foot">
+            <span style="font-size:12px;color:var(--t3);">${period.includes("~") ? "~ " + period.split("~")[1].trim().slice(5).replace("-",".") : period}</span>
+            <span style="font-size:13px;color:var(--primary);">공고보기 →</span>
+          </div>
+        </div>
+      `;
+    }).join("")}
+  `;
+}
+
+function openLiveDetail(idx) {
+  const item = _liveDisplayItems[idx];
+  if (!item) return;
+  const fieldNm = item.pldirSportRealmLclasCodeNm || "기타";
+  const field = FIELD_MAP[fieldNm] || { label: fieldNm, color: "blue" };
+  const end = liveEndDate(item);
+
+  document.getElementById("detail-nav").textContent = item.jrsdInsttNm;
+  document.getElementById("btn-apply").href = item.rceptEngnHmpgUrl || item.pblancUrl || "#";
+
+  document.getElementById("detail-body").innerHTML = `
+    <div class="sec detail-hero" style="border-bottom:1px solid var(--border);">
+      <span class="badge badge-${field.color}" style="margin-bottom:12px;">${field.label}</span>
+      <h1 class="detail-title">${item.pblancNm}</h1>
+      <p class="detail-org">${item.jrsdInsttNm}</p>
+      <div class="meta-row">
+        ${end ? `<div class="meta-tag">마감 <b>${end.slice(5).replace("-",".")}</b></div>` : ""}
+        <div class="meta-tag">분야 <b>${fieldNm}</b></div>
+        ${item.excInsttNm && item.excInsttNm !== item.jrsdInsttNm
+          ? `<div class="meta-tag">수행 <b>${item.excInsttNm}</b></div>` : ""}
+      </div>
+    </div>
+    <div class="sec" style="background:var(--blue-50);">
+      <p style="font-size:11px;font-weight:600;color:var(--blue-500);letter-spacing:.3px;margin-bottom:8px;">신청 전에 알아두세요</p>
+      <p class="sec-text" style="line-height:1.7;">${item.rceptEngnHmpgUrl ? "사업 운영기관의 <b>직접 신청 페이지</b>로 이어져요." : "<b>기업마당(bizinfo.go.kr)</b> 공고 페이지로 이어져요."} 신청하기 버튼을 눌러 확인 후 신청해주세요.</p>
+    </div>
+    ${item.bsnsSumryCn ? `<div class="sec"><p class="sec-label">사업 개요</p><div class="sec-text" style="line-height:1.7;">${item.bsnsSumryCn}</div></div>` : ""}
+    ${item.trgetNm ? `<div class="sec"><p class="sec-label">지원 대상</p><p class="sec-text">${item.trgetNm}</p></div>` : ""}
+    ${item.reqstMthPapersCn ? `<div class="sec"><p class="sec-label">신청 방법</p><p class="sec-text">${item.reqstMthPapersCn}</p></div>` : ""}
+    <div class="sec"><p class="sec-label">신청 기간</p><p class="sec-text">${item.reqstBeginEndDe || "-"}</p></div>
+  `;
+
+  go("detail");
+  window.scrollTo({ top: 0 });
+}
+
+// ── Detail ───────────────────────────────────────
+function openDetail(id) {
+  const g = getGrantById(id);
+  if (!g) return;
+
+  document.getElementById("detail-nav").textContent = g.org;
+  document.getElementById("btn-apply").href = g.apply_url;
+
+  document.getElementById("detail-body").innerHTML = `
+    <div class="sec detail-hero" style="border-bottom:1px solid var(--border);">
+      <span class="badge badge-${g.color}" style="margin-bottom:12px;">${g.category}</span>
+      <h1 class="detail-title">${g.title}</h1>
+      <p class="detail-org">${g.org}</p>
+      <div class="meta-row">
+        <div class="meta-tag">마감 <b>${g.deadline.slice(5).replace("-",".")}</b></div>
+        <div class="meta-tag">지원금액 <b>${g.amount}</b></div>
+        ${g.rate ? `<div class="meta-tag">금리 <b>${g.rate}</b></div>` : ""}
+      </div>
+    </div>
+    ${g.tip ? `
+    <div class="sec" style="background:var(--blue-50);">
+      <p style="font-size:11px;font-weight:600;color:var(--blue-500);letter-spacing:.3px;margin-bottom:8px;">신청 전에 알아두세요</p>
+      <p class="sec-text" style="line-height:1.7;">${g.tip}</p>
+    </div>` : ""}
+    <div class="sec"><p class="sec-label">요약</p><p class="body-em" style="color:var(--t1);">${g.summary}</p></div>
+    <div class="sec"><p class="sec-label">내용</p><p class="sec-text">${g.detail}</p></div>
+    <div class="sec"><p class="sec-label">신청 대상</p><p class="sec-text">${g.target}</p></div>
+    <div class="sec"><p class="sec-label">신청 방법</p><p class="sec-text">${g.how_to_apply}</p></div>
+    <div class="sec"><p class="sec-label">신청 기간</p><p class="sec-text">${g.start} ~ ${g.deadline}</p></div>
+  `;
+
+  go("detail");
+  window.scrollTo({ top: 0 });
+}
+
+// ── Notify Sheet ─────────────────────────────────
+function closeSheet(e) {
+  if (e && e.target !== document.getElementById("sheet-bg")) return;
+  const bg = document.getElementById("sheet-bg");
+  bg.classList.remove("vis");
+  document.getElementById("sheet").classList.remove("up");
+  setTimeout(() => bg.style.display = "none", 260);
+}
+function submitNotify() {
+  if (!document.getElementById("sheet-dot").classList.contains("on")) { alert("동의가 필요해요"); return; }
+  if (document.getElementById("sheet-phone").value.length < 12) { alert("올바른 번호를 입력해주세요"); return; }
+  closeSheet();
+  setTimeout(() => alert("신청 완료! 신청 가능해지면 카카오톡으로 알려드릴게요"), 300);
+}
+function dotToggle(id) { document.getElementById(id).classList.toggle("on"); }
+
+// ── Utils ─────────────────────────────────────────
+function go(screenId) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+  document.getElementById(screenId).classList.add("on");
+  window.scrollTo({ top: 0 });
+}
+
+function ddayTag(dateStr) {
+  const d = Math.ceil((new Date(dateStr) - new Date()) / 86400000);
+  if (d <= 3) return `<span class="dday dday-urgent">D-${d} 마감임박</span>`;
+  if (d <= 7) return `<span class="dday dday-normal">D-${d}</span>`;
+  return `<span class="dday dday-safe">D-${d}</span>`;
+}
+
+function isActive(dateStr) {
+  if (!dateStr) return false;
+  return new Date(dateStr) >= new Date(new Date().toDateString());
+}
+
+function fmtPhone(el) {
+  const v = el.value.replace(/\D/g, "").slice(0, 11);
+  if (v.length <= 3) el.value = v;
+  else if (v.length <= 7) el.value = v.slice(0,3) + "-" + v.slice(3);
+  else el.value = v.slice(0,3) + "-" + v.slice(3,7) + "-" + v.slice(7);
+}
+
+// ── Boot ──────────────────────────────────────────
+document.getElementById("stage-list").innerHTML = STARTUP_STAGES.map((s, i) => `
+  <div class="stage-item" data-i="${i}" onclick="selectStage(${i})">
+    <div class="stage-dot">${i + 1}</div>
+    <div><p class="stage-label">${s.label}</p><p class="stage-sub">${s.sub}</p></div>
+  </div>
+`).join("");
+</script>
+</body>
+</html>
