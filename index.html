@@ -425,9 +425,12 @@
     <div class="progress-seg on"></div>
     <div class="progress-seg"></div>
   </div>
-  <div class="pad" style="padding-top:20px;padding-bottom:32px;">
+  <div class="pad pb-cta" style="padding-top:20px;">
     <h2 class="step-heading" id="industry-heading">업종이<br/>어떻게 되나요?</h2>
     <div class="chip-wrap" id="industry-chips" style="margin-top:24px;"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn btn-primary" id="btn-industry-next" onclick="confirmIndustry()" disabled>다음</button>
   </div>
 </div>
 
@@ -640,15 +643,14 @@ function selectIndustry(val) {
   document.querySelectorAll("#industry-chips .chip").forEach(c =>
     c.classList.toggle("on", c.dataset.v === val)
   );
-
-  // reset next step
   document.querySelectorAll("#revenue-chips .revenue-chip").forEach(c => c.classList.remove("on"));
   document.querySelectorAll("#stage-list .stage-item").forEach(c => c.classList.remove("on"));
   state.eRevenue = null; state.pStage = null;
+  document.getElementById("btn-industry-next").disabled = false;
+}
 
-  setTimeout(() => {
-    go(state.flow === "prospective" ? "step-stage" : "step-revenue");
-  }, 120);
+function confirmIndustry() {
+  go(state.flow === "prospective" ? "step-stage" : "step-revenue");
 }
 
 // ── Revenue ──────────────────────────────────────
@@ -921,7 +923,29 @@ function go(screenId) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
   document.getElementById(screenId).classList.add("on");
   window.scrollTo({ top: 0 });
+  if (location.hash !== "#" + screenId) history.pushState(null, "", "#" + screenId);
 }
+
+window.addEventListener("popstate", () => {
+  const id = location.hash.slice(1);
+  const el = document.getElementById(id);
+  if (el && el.classList.contains("screen")) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+    el.classList.add("on");
+    window.scrollTo({ top: 0 });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const id = location.hash.slice(1);
+  const el = id && document.getElementById(id);
+  if (el && el.classList.contains("screen")) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+    el.classList.add("on");
+  } else {
+    go("home");
+  }
+});
 
 function ddayTag(dateStr) {
   const d = Math.ceil((new Date(dateStr) - new Date()) / 86400000);
